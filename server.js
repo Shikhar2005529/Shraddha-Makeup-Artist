@@ -5,17 +5,19 @@ const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Render ke liye PORT dynamic rakha hai
 
 // 1. Middleware
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// 2. MongoDB Connection
-mongoose.connect('mongodb://127.0.0.1:27017/shraddhaMakeup')
-    .then(() => console.log("✅ Database Connected!"))
-    .catch(err => console.error("❌ DB Error:", err));
+// 2. MongoDB Cloud Connection (Updated with your Atlas Link)
+const dbURI = 'mongodb+srv://shikhar:makeup@123@cluster0.cloieau.mongodb.net/shraddhaMakeup?retryWrites=true&w=majority&appName=Cluster0';
+
+mongoose.connect(dbURI)
+    .then(() => console.log("✅ Cloud Database Connected!"))
+    .catch(err => console.error("❌ Cloud DB Error:", err));
 
 // 3. Schema & Model
 const bookingSchema = new mongoose.Schema({
@@ -30,23 +32,25 @@ const bookingSchema = new mongoose.Schema({
 
 const Booking = mongoose.model('Booking', bookingSchema);
 
-// 4. NODEMAILER CONFIGURATION (Teri details ke sath)
+// 4. NODEMAILER CONFIGURATION
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'peppergaming001@gmail.com', 
+        user: 'peppergaming001@gmail.com',
         pass: 'jboy kwwr knyw rdul' 
     }
 });
 
-// 5. Route: Nayi Booking + Email Notification
+// 5. Route: Nayi Booking (Improved with Email Error Handling)
 app.post('/api/book', async (req, res) => {
     try {
         const { name, email, phone, service, date } = req.body;
         
+        // Pehle DB mein save karo
         const newBooking = new Booking({ name, email, phone, service, date });
         await newBooking.save();
 
+        // Email setup
         const mailOptions = {
             from: 'peppergaming001@gmail.com',
             to: 'cybersleuthofficiall@gmail.com', 
@@ -59,20 +63,21 @@ app.post('/api/book', async (req, res) => {
                     <p><strong>Event Date:</strong> ${new Date(date).toDateString()}</p>
                     <p><strong>Contact:</strong> ${phone}</p>
                     <hr>
-                    <p>Bhai, Admin Dashboard check kar lo details ke liye.</p>
+                    <p>Admin Dashboard check kar lo details ke liye.</p>
                 </div>
             `
         };
 
+        // Email bhejo par error aane par booking mat roko
         transporter.sendMail(mailOptions, (error, info) => {
-            if (error) console.log("❌ Email Error:", error);
+            if (error) console.log("❌ Email Error (Booking Saved Anyway):", error.message);
             else console.log("📧 Email Sent: " + info.response);
         });
 
         res.status(200).json({ message: "Booking Successful!" });
     } catch (err) { 
-        console.error(err);
-        res.status(500).json({ message: "Failed to book." }); 
+        console.error("❌ DB Save Error:", err);
+        res.status(500).json({ message: "Failed to book. Server issue!" }); 
     }
 });
 
@@ -81,7 +86,7 @@ app.get('/api/admin/bookings', async (req, res) => {
     try {
         const data = await Booking.find().sort({ date: 1 });
         res.status(200).json(data);
-    } catch (err) { res.status(500).json({ message: "Error" }); }
+    } catch (err) { res.status(500).json({ message: "Error fetching bookings" }); }
 });
 
 // 7. Route: Booking CONFIRM/CANCEL logic
@@ -99,11 +104,10 @@ app.post('/api/admin/cancel/:id', async (req, res) => {
     } catch (err) { res.status(500).send(err); }
 });
 
-// 8. Route: USER STATUS CHECK (TRACKING) - **YAHAN HAI NEW CODE**
+// 8. Route: USER STATUS CHECK
 app.get('/api/status/:phone', async (req, res) => {
     try {
         const phone = req.params.phone;
-        // Phone number se sabse latest booking dhundte hain
         const booking = await Booking.findOne({ phone: phone }).sort({ bookingDate: -1 });
         
         if (booking) {
