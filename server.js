@@ -12,12 +12,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// 2. MongoDB Cloud Connection (Updated with your Atlas Link)
-const dbURI = 'mongodb+srv://shikhar:makeup@123@cluster0.cloieau.mongodb.net/shraddhaMakeup?retryWrites=true&w=majority&appName=Cluster0';
+// 2. MongoDB Cloud Connection (Cleaned Link)
+const dbURI = "mongodb+srv://shikhar:makeup%40123@cluster0.cloieau.mongodb.net/shraddhaMakeup?retryWrites=true&w=majority";
 
 mongoose.connect(dbURI)
     .then(() => console.log("✅ Cloud Database Connected!"))
-    .catch(err => console.error("❌ Cloud DB Error:", err));
+    .catch(err => {
+        console.error("❌ Cloud DB Error Details:", err.message);
+    });
 
 // 3. Schema & Model
 const bookingSchema = new mongoose.Schema({
