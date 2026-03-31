@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shraddha Makeup Artist | Luxury Bridal & Glam</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        /* --- Existing Styles --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; text-decoration: none; list-style: none; scroll-behavior: smooth; }
+        :root { --gold: #d4af37; --dark: #1a1a1a; --light-bg: #fffafb; --text-color: #555; --serif: 'Playfair Display', serif; --sans: 'Poppins', sans-serif; }
+        body { font-family: var(--sans); background-color: var(--light-bg); color: var(--text-color); line-height: 1.6; overflow-x: hidden; }
+        h1, h2, h3 { font-family: var(--serif); font-weight: 700; color: var(--dark); }
+        header { background-color: white; padding: 15px 0; position: fixed; width: 100%; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; }
+        .logo { font-family: var(--serif); font-size: 2rem; color: var(--dark); }
+        .logo span { color: var(--gold); }
+        nav ul { display: flex; align-items: center; }
+        nav ul li { margin-left: 35px; }
+        nav ul li a { font-weight: 500; font-size: 0.95rem; color: var(--dark); }
+        .book-now-btn { background-color: var(--gold); color: white !important; padding: 10px 25px; border-radius: 50px; }
+        .hero { height: 100vh; display: flex; align-items: center; background-image: linear-gradient(to right, rgba(255, 250, 251, 0.85) 35%, rgba(255, 255, 255, 0.1)), url('/images/hero-bg.jpg'); background-size: cover; background-position: center right; }
+        .hero-content { margin-left: 10%; max-width: 650px; }
+        .hero-content h1 { font-size: 4.5rem; line-height: 1.1; margin-bottom: 20px; }
+        .hero-content h1 span { color: var(--gold); }
+        .cta-btn { display: inline-block; padding: 15px 40px; border: 2px solid var(--gold); color: var(--gold); border-radius: 50px; font-weight: 600; transition: 0.3s; background: transparent; cursor: pointer; }
+        .cta-btn:hover { background: var(--gold); color: white; }
+        .section-title { text-align: center; padding: 80px 0 40px; }
+        .section-title h2 { font-size: 3rem; }
+        .section-title h2 span { color: var(--gold); }
+        .portfolio-section { padding: 40px 10%; background-color: white; }
+        .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .portfolio-card { position: relative; height: 350px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .portfolio-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .portfolio-card:hover img { transform: scale(1.1); }
+        .services-section { padding: 40px 10%; background-color: var(--light-bg); }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .service-card { background: white; padding: 40px; border-radius: 20px; text-align: center; border: 1px solid #eee; }
+        .price { font-size: 2rem; color: var(--gold); font-weight: 700; margin: 15px 0; display: block; }
+        .booking-section { padding: 80px 10%; background: #fff; }
+        .booking-container { max-width: 600px; margin: 0 auto; background: var(--light-bg); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .booking-form { display: flex; flex-direction: column; gap: 15px; }
+        .booking-form input, .booking-form select { padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-family: var(--sans); }
+        .booking-form button { margin-top: 10px; border: none; background: var(--gold); color: white; font-size: 1.1rem; }
+
+        /* --- NEW Status Check Section Styles --- */
+        #status-check { padding: 80px 10%; background: var(--light-bg); text-align: center; }
+        .status-card { max-width: 500px; margin: 0 auto; background: white; padding: 35px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .status-card h2 { margin-bottom: 10px; font-size: 2.2rem; }
+        .status-input-group { display: flex; gap: 10px; margin-top: 20px; }
+        .status-input-group input { flex: 1; padding: 12px 15px; border: 1px solid #ddd; border-radius: 10px; font-family: var(--sans); }
+        #statusResult { margin-top: 25px; display: none; padding: 20px; border-radius: 15px; text-align: left; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        footer { background-color: var(--dark); color: white; text-align: center; padding: 40px 10px; margin-top: 50px; }
+        footer .dev-name { color: var(--gold); font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">Shraddha Makeup Artist<span>.</span></div>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#booking" class="book-now-btn">Book Now</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Glamour with <br><span>Elegance</span></h1>
+            <p>Professional Bridal, Party & Editorial Makeup Artist.</p>
+            <a href="#portfolio" class="cta-btn">Explore Portfolio</a>
+        </div>
+    </section>
+
+    <section id="portfolio" class="portfolio-section">
+        <div class="section-title"><h2>My <span>Masterpieces</span></h2></div>
+        <div class="portfolio-grid">
+            <div class="portfolio-card"><img src="/images/bridal.jpg" alt="Bridal"></div>
+            <div class="portfolio-card"><img src="/images/party.jpg" alt="Party"></div>
+            <div class="portfolio-card"><img src="/images/engagement.jpg" alt="Engagement"></div>
+            <div class="portfolio-card"><img src="/images/editorial.jpg" alt="Editorial"></div>
+        </div>
+    </section>
+
+    <section id="services" class="services-section">
+        <div class="section-title"><h2>Our <span>Services</span></h2></div>
+        <div class="services-grid">
+            <div class="service-card"><h3>Bridal Makeup</h3><span class="price">₹15,000/-</span><a href="#booking" class="cta-btn" style="padding: 10px 30px;">Select</a></div>
+            <div class="service-card"><h3>Party Makeup</h3><span class="price">₹3,500/-</span><a href="#booking" class="cta-btn" style="padding: 10px 30px;">Select</a></div>
+            <div class="service-card"><h3>Engagement Look</h3><span class="price">₹7,000/-</span><a href="#booking" class="cta-btn" style="padding: 10px 30px;">Select</a></div>
+        </div>
+    </section>
+
+    <section id="booking" class="booking-section">
+        <div class="section-title">
+            <h2>Book An <span>Appointment</span></h2>
+            <p>Ready to look your best? Let's connect.</p>
+        </div>
+        <div class="booking-container">
+            <form id="appointmentForm" class="booking-form">
+                <input type="text" id="name" placeholder="Your Name" required>
+                <input type="email" id="email" placeholder="Email Address" required>
+                <input type="tel" id="phone" placeholder="Phone Number (10 Digits)" required>
+                <select id="service" required>
+                    <option value="">Choose a Service</option>
+                    <option value="Bridal">Bridal Makeup</option>
+                    <option value="Party">Party Makeup</option>
+                    <option value="Engagement">Engagement Look</option>
+                </select>
+                <input type="date" id="date" required>
+                <button type="submit" class="cta-btn">Confirm Booking</button>
+            </form>
+        </div>
+    </section>
+
+    <section id="status-check">
+        <div class="status-card">
+            <h2>Check <span>Status</span></h2>
+            <p>Enter your phone number to check booking status.</p>
+            <div class="status-input-group">
+                <input type="tel" id="statusPhone" placeholder="Enter Registered Phone">
+                <button onclick="checkUserStatus()" class="cta-btn" style="padding: 10px 25px; font-size: 0.9rem;">Track</button>
+            </div>
+            <div id="statusResult"></div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo" style="color: white; margin-bottom: 15px;">Shraddha Makeup Artist<span>.</span></div>
+        <p>&copy; 2026 Shraddha Makeup Artist. All Rights Reserved.</p>
+        <p style="margin-top: 10px;">Designed by <a href="#" class="dev-name">Shikhar Saxena</a></p>
+    </footer>
+
+    <script>
+        // --- 1. Form Date Limit ---
+        const dateInput = document.getElementById('date');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+
+        // --- 2. Handle Booking Submit ---
+        document.getElementById('appointmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const service = document.getElementById('service').value;
+            const date = document.getElementById('date').value;
+
+            if(phone.length !== 10) {
+                Swal.fire({ icon: 'warning', title: 'Invalid Phone', text: 'Bhai, 10 digit ka number dalo!', confirmButtonColor: '#d4af37' });
+                return;
+            }
+
+            Swal.fire({ title: 'Processing...', didOpen: () => { Swal.showLoading(); } });
+
+            try {
+                const response = await fetch('/api/book', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, service, date })
+                });
+
+                if(response.ok) {
+                    Swal.fire({ icon: 'success', title: 'Success!', text: 'Booking ho gayi bhai! Shraddha contact karengi.', confirmButtonColor: '#d4af37' });
+                    document.getElementById('appointmentForm').reset();
+                } else { throw new Error(); }
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Oops!', text: 'Server issue hai bhai!', confirmButtonColor: '#d4af37' });
+            }
+        });
+
+        // --- 3. NEW: Check Status Function ---
+        async function checkUserStatus() {
+            const phone = document.getElementById('statusPhone').value;
+            const resultDiv = document.getElementById('statusResult');
+
+            if (phone.length !== 10) {
+                Swal.fire('Error', 'Sahi number toh dalo bhai!', 'warning');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/status/${phone}`);
+                const data = await response.json();
+
+                resultDiv.style.display = 'block';
+
+                if (response.ok) {
+                    let color = "#f39c12"; // Pending
+                    if (data.status === "Confirmed") color = "#2ecc71"; // Green
+                    if (data.status === "Cancelled") color = "#e74c3c"; // Red
+
+                    resultDiv.style.backgroundColor = color + "15"; // Very light background
+                    resultDiv.style.border = `1px solid ${color}`;
+                    resultDiv.innerHTML = `
+                        <h3 style="color: ${color}; margin-bottom: 5px;">Status: ${data.status}</h3>
+                        <p style="font-size: 0.9rem; color: #444;">Hi <strong>${data.name}</strong>, your ${data.service} booking for <b>${new Date(data.date).toDateString()}</b> is ${data.status.toLowerCase()}.</p>
+                    `;
+                } else {
+                    resultDiv.style.backgroundColor = "#eee";
+                    resultDiv.style.border = "1px solid #ccc";
+                    resultDiv.innerHTML = `<p style="color: #666; font-weight: 500;">Bhai, is number se koi record nahi mila!</p>`;
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Server connect nahi ho raha!', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
